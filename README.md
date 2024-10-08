@@ -25,6 +25,7 @@ using Patreon.Api;
 
 public class MyService(IPatreonApi patreonApi)
 {
+    // Get the active tier ids for a user based on your campaign id
     public async Task GetTiers()
     {
         AuthorizationTokens tokens = new()
@@ -44,6 +45,31 @@ public class MyService(IPatreonApi patreonApi)
         // - tokens.RefreshToken
         
         IReadOnlyList<string>? tiers = response.GetTierIds("your-campaign-id");
+    }
+    
+    // Manually refreshing the access + refresh tokens using a user refresh token and your client id + secret
+    public async Task ManualTokenRefresh()
+    {        
+        PatreonTokenResponse response = await patreonApi.GetToken(
+            PatreonTokenRequest.FromRefreshToken(
+                authTokens.RefreshToken,
+                "your-client-id",
+                "your-client-secret"
+            )
+        );
+    }
+    
+    // Getting access + refresh tokens using a code from the Patreon OAuth2 flow
+    public async Task GetTokensFromCode(string code)
+    {
+        PatreonTokenResponse response = await patreonApi.GetToken(
+            PatreonTokenRequest.FromCode(
+                code,
+                "your-client-id",
+                "your-client-secret",
+                "your-redirect-uri"
+            )
+        );
     }
 }
 ```
