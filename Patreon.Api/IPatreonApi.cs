@@ -18,7 +18,7 @@ public interface IPatreonApi
     [Get("/oauth2/v2/identity")]
     Task<PatreonIdentityResponse> GetIdentity(
         [Query] string include = "memberships.campaign,memberships.currently_entitled_tiers",
-        [Property] AuthorizationTokens? authorization = null,
+        [Property(nameof(AuthorizationTokens))] AuthorizationTokens? authorization = null,
         CancellationToken cancellationToken = default
     );
 }

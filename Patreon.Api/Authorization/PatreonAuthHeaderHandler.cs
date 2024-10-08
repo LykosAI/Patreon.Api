@@ -12,7 +12,8 @@ namespace Patreon.Api.Authorization;
 
 public class PatreonAuthHeaderHandler : DelegatingHandler
 {
-    private static HttpRequestOptionsKey<AuthorizationTokens> AuthorizationTokensOptionsKey { get; } = new();
+    private static HttpRequestOptionsKey<AuthorizationTokens> AuthorizationTokensOptionsKey { get; } =
+        new(nameof(AuthorizationTokens));
 
     private readonly ILogger<PatreonAuthHeaderHandler> logger;
     private readonly AsyncRetryPolicy<HttpResponseMessage> policy;
