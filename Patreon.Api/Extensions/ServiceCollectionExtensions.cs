@@ -17,8 +17,12 @@ public static class ServiceCollectionExtensions
     /// and integrates the Refit library with a custom content serializer.
     /// </summary>
     /// <param name="services">The service collection to which the Patreon API services will be added.</param>
+    /// <param name="setupAction">An optional action to configure the Patreon client settings.</param>
     /// <returns>The configured IHttpClientBuilder for further customization.</returns>
-    public static IHttpClientBuilder AddPatreonApi(this IServiceCollection services)
+    public static IHttpClientBuilder AddPatreonApi(
+        this IServiceCollection services,
+        Action<PatreonClientConfig>? setupAction = null
+    )
     {
         var refitSettings = new RefitSettings
         {
@@ -29,7 +33,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<PatreonAuthHeaderHandler>();
 
-        return services
+        var clientBuilder = services
             .AddRefitClient<IPatreonApi>(refitSettings)
             .ConfigureHttpClient(
                 (provider, client) =>
@@ -39,5 +43,25 @@ public static class ServiceCollectionExtensions
                 }
             )
             .AddHttpMessageHandler<PatreonAuthHeaderHandler>();
+
+        if (setupAction != null)
+        {
+            services.ConfigurePatreonApi(setupAction);
+        }
+
+        return clientBuilder;
+    }
+
+    /// <summary>
+    /// Configures the Patreon API client settings using the specified setup action.
+    /// </summary>
+    /// <param name="services">The service collection to which the Patreon API configuration will be added.</param>
+    /// <param name="setupAction">An action to configure the Patreon client settings.</param>
+    public static void ConfigurePatreonApi(
+        this IServiceCollection services,
+        Action<PatreonClientConfig> setupAction
+    )
+    {
+        services.Configure(setupAction);
     }
 }
