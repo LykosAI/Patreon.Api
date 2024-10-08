@@ -40,8 +40,7 @@ jobs:
           
       - name: Set Package Name
         run: |
-          echo "PROJECT_NAME=Patreon.Api" >> $GITHUB_ENV
-          echo "PKG_NAME=./${{ env.PROJECT_NAME }}/bin/Release/${{ env.PROJECT_NAME }}.${{ env.RELEASE_VERSION }}.nupkg" >> $GITHUB_ENV
+          echo "PKG_NAME=./Patreon.Api/bin/Release/Patreon.Api.${{ env.RELEASE_VERSION }}.nupkg" >> $GITHUB_ENV
           echo "Using PKG_NAME = ${{ env.PKG_NAME }}"
         
       - name: Checkout
