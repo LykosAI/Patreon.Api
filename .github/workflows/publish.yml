@@ -1,0 +1,87 @@
+name: Publish
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: Version (Semver without leading v)
+      nuget-release:
+        type: boolean
+        description: Release NuGet Package?
+        default: true
+      github-release:
+        type: boolean
+        description: Make GitHub Release?
+        default: true
+      github-release-draft:
+        type: boolean
+        description: Mark GitHub Release as Draft?
+        default: false
+      github-release-prerelease:
+        type: boolean
+        description: Mark GitHub Release as Prerelease?
+        default: false
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Set Version from manual input
+        run: |
+          echo "Using RELEASE_VERSION = ${{ github.event.inputs.version }}"
+          echo "RELEASE_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          
+      - name: Set Package Name
+        run: |
+          echo "PROJECT_NAME=Patreon.Api" >> $GITHUB_ENV
+          echo "PKG_NAME=./${{ env.PROJECT_NAME }}/bin/Release/${{ env.PROJECT_NAME }}.${{ env.RELEASE_VERSION }}.nupkg" >> $GITHUB_ENV
+          echo "Using PKG_NAME = ${{ env.PKG_NAME }}"
+        
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            7.0.400
+            8.0.x
+        
+      - name: Build
+        run: dotnet build -c Release -p:Version=$RELEASE_VERSION
+
+      - name: Test
+        run: dotnet test -c Release --no-build
+        
+      # - name: Add NuGet Source
+      #   run: |
+      #     dotnet nuget add source https://nuget.pkg.github.com/(GITHUB_USERNAME)/index.json 
+      #     --name github --username (GITHUB_USERNAME) --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+          
+      - name: Push Packages to NuGet
+        run: |
+          echo "Pushing ${{ env.PKG_NAME }}"
+          dotnet nuget push ${{ env.PKG_NAME }} --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+      - name: Create Github Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            ${{ env.PKG_NAME }}
+          fail_on_unmatched_files: true
+          tag_name: v${{ github.event.inputs.version }}
+          body: '# v${{ github.event.inputs.version }}'
+          draft: ${{ github.event.inputs.github-release-draft == 'true' }}
+          prerelease: ${{ github.event.inputs.github-release-prerelease == 'true' }} 

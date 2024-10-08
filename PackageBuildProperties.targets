@@ -1,0 +1,35 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>1.0.0-dev.999</Version>
+        <InformationalVersion>$(Version)</InformationalVersion>
+        <PackageVersion>$(Version)</PackageVersion>
+        <NuGetVersion>$(Version)</NuGetVersion>
+    </PropertyGroup>
+    
+    <!-- NuGet Package -->
+    <PropertyGroup>
+        <PackageId>Patreon.Api</PackageId>
+        <Description>A .NET Client for Patreon OAuth Api v2 using Refit and Polly.</Description>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <Copyright>LykosAI</Copyright>
+        <Authors>LykosAI</Authors>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/LykosAI/$(PackageId)</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/LykosAI/$(PackageId)</PackageProjectUrl>
+        <PackageReleaseNotes>https://github.com/LykosAI/$(PackageId)/blob/main/CHANGELOG.md</PackageReleaseNotes>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageTags>patreon refit oauth</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(SolutionDir)/README.md" Pack="true" PackagePath="/"/>
+    </ItemGroup>
+    
+</Project>
