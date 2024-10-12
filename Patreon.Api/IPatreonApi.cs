@@ -14,6 +14,7 @@ public interface IPatreonApi
         "email,first_name,full_name,image_url,last_name,thumb_url,url,vanity,is_email_verified";
     private const string DefaultMemberFields =
         "currently_entitled_amount_cents,lifetime_support_cents,campaign_lifetime_support_cents,last_charge_status,patron_status,last_charge_date,pledge_relationship_start,pledge_cadence";
+    private const string DefaultTierFields = "title,amount_cents";
 
     [Headers("Content-Type: application/x-www-form-urlencoded")]
     [Post("/oauth2/token")]
@@ -27,6 +28,7 @@ public interface IPatreonApi
         string? include = DefaultInclude,
         [AliasAs("fields[user]")] string? userFields = DefaultUserFields,
         [AliasAs("fields[member]")] string? memberFields = DefaultMemberFields,
+        [AliasAs("fields[tier]")] string? tierFields = DefaultTierFields,
         [Property(nameof(AuthorizationTokens))] AuthorizationTokens? authorization = null,
         CancellationToken cancellationToken = default
     );
@@ -36,6 +38,7 @@ public interface IPatreonApi
         string? include = DefaultInclude,
         [AliasAs("fields[user]")] string? userFields = DefaultUserFields,
         [AliasAs("fields[member]")] string? memberFields = DefaultMemberFields,
+        [AliasAs("fields[tier]")] string? tierFields = DefaultTierFields,
         [Property(nameof(AuthorizationTokens))] AuthorizationTokens? authorization = null,
         CancellationToken cancellationToken = default
     );
