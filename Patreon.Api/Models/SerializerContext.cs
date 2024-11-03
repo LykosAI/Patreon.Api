@@ -4,6 +4,8 @@ using System.Text.Json.Serialization;
 namespace Patreon.Api.Models;
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower)]
+[JsonSerializable(typeof(PatreonTokenRequest))]
+[JsonSerializable(typeof(PatreonTokenResponse))]
 [JsonSerializable(typeof(PatreonIdentityResponse))]
 [JsonSerializable(typeof(JsonObject))]
 [JsonSerializable(typeof(JsonValue))]
